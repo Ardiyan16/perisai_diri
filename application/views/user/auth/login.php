@@ -26,6 +26,8 @@
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/login/css/util.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/login/css/main.css">
+    <script src="<?= base_url() ?>assets/login/js/sweetalert2-all.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <!--===============================================================================================-->
 </head>
 
@@ -34,7 +36,7 @@
     <div class="limiter">
         <div class="container-login100" style="background-image: url(<?= base_url('assets/login/images/bg-01.jpg') ?>);">
             <div class="wrap-login100">
-                <form class="login100-form validate-form">
+                <form class="login100-form validate-form" method="post" action="<?= base_url('User/Auth/login') ?>">
                     <span class="login100-form-logo">
                         <img src="<?= base_url() ?>assets/login/images/pd.png" height="100" width="130">
                     </span>
@@ -43,18 +45,20 @@
                         Log in
                     </span>
 
-                    <div class="wrap-input100 validate-input" data-validate="Enter username">
-                        <input class="input100" type="text" name="username" placeholder="Username">
+                    <div class="wrap-input100">
+                        <input class="input100" type="email" name="email" placeholder="Email">
                         <span class="focus-input100" data-placeholder="&#xf207;"></span>
+                        <?= form_error('email', '<small class="text-danger pl-3">', '</small>'); ?>
                     </div>
 
-                    <div class="wrap-input100 validate-input" data-validate="Enter password">
-                        <input class="input100" type="password" name="pass" placeholder="Password">
+                    <div class="wrap-input100">
+                        <input class="input100" type="password" name="password" placeholder="Password">
                         <span class="focus-input100" data-placeholder="&#xf191;"></span>
+                        <?= form_error('password', '<small class="text-danger pl-3">', '</small>'); ?>
                     </div>
 
                     <div class="container-login100-form-btn">
-                        <button class="login100-form-btn">
+                        <button class="login100-form-btn" type="submit">
                             Login
                         </button>
                     </div>
@@ -92,6 +96,49 @@
     <script src="<?= base_url() ?>assets/login/vendor/countdowntime/countdowntime.js"></script>
     <!--===============================================================================================-->
     <script src="<?= base_url() ?>assets/login/js/main.js"></script>
+
+    <script>
+        <?php if ($this->session->flashdata('insert')) : ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Anda berhasil registrasi akun',
+                text: 'silahkan tunggu konfirmasi dari admin',
+                showConfirmButton: true,
+                // timer: 1500
+            })
+        <?php elseif ($this->session->flashdata('belumkonfirmasi')) : ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Maaf akun anda belum dikonfirmasi!',
+                text: 'silahkan tunggu konfirmasi dari admin',
+                showConfirmButton: true,
+                // timer: 1500
+            })
+        <?php elseif ($this->session->flashdata('passwordsalah')) : ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Password anda salah!',
+                text: 'silahkan coba lagi',
+                showConfirmButton: true,
+                // timer: 1500
+            })
+        <?php elseif ($this->session->flashdata('emailsalah')) : ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Email anda salah!',
+                text: 'silahkan coba lagi',
+                showConfirmButton: true,
+                // timer: 1500
+            })
+        <?php elseif ($this->session->flashdata('logout')) : ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Anda berhasil logout',
+                showConfirmButton: true,
+                // timer: 1500
+            })
+        <?php endif ?>
+    </script>
 
 </body>
 

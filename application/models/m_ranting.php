@@ -23,6 +23,29 @@ class m_ranting extends CI_Model
         $this->db->insert($this->tabel, $this);
     }
 
+    public function update_ranting()
+    {
+        $post = $this->input->post();
+        $this->id_ranting = $post['id_ranting'];
+        $this->nama_ranting = $post['nama_ranting'];
+        $this->alamat = $post['alamat'];
+        $this->pelatih = $post['pelatih'];
+        $this->ketua = $post['ketua'];
+        $this->jadwal = $post['jadwal'];
+        $this->keterangan = $post['keterangan'];
+        if (!empty($_FILES["logo"]["name"])) {
+            $this->logo = $this->uploadLogo();
+        } else {
+            $this->logo = $post["old_logo"];
+        }
+        if (!empty($_FILES["foto"]["name"])) {
+            $this->foto = $this->uploadFoto();
+        } else {
+            $this->foto = $post["old_foto"];
+        }
+        $this->db->update($this->tabel, $this, array('id_ranting' => $post['id_ranting']));
+    }
+
     private function uploadLogo()
     {
         $config['upload_path']          =  './assets/back/images/logo';
@@ -57,5 +80,30 @@ class m_ranting extends CI_Model
             return $this->upload->data("file_name");
         }
         print_r($this->upload->display_errors());
+    }
+
+    public function hapus_ranting($id)
+    {
+        $this->hapus_logo($id);
+        $this->hapus_foto($id);
+        return $this->db->delete($this->tabel, array("id_ranting" => $id));
+    }
+
+    public function hapus_logo($id)
+    {
+        $logo = $this->db->get_where($this->tabel, ['id_ranting' => $id])->row();
+        if ($logo->logo != "01.jpg") {
+            $filename = explode(".", $logo->logo)[0];
+            return array_map('unlink', glob(FCPATH . "/assets/back/images/logo/$filename.*"));
+        }
+    }
+
+    public function hapus_foto($id)
+    {
+        $foto = $this->db->get_where($this->tabel, ['id_ranting' => $id])->row();
+        if ($foto->foto != "01.jpg") {
+            $filename = explode(".", $foto->foto)[0];
+            return array_map('unlink', glob(FCPATH . "/assets/back/images/foto/$filename.*"));
+        }
     }
 }
